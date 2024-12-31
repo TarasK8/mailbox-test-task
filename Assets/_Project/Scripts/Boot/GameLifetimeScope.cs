@@ -8,21 +8,21 @@ namespace MailboxGame.Boot
     public class GameLifetimeScope : LifetimeScope
     {
         private Camera _camera;
-        private Drone _drone;
+        private Mail _mailPrefab;
         private Trajectory _trajectory;
         
-        public void Init(Camera camera, Drone drone, Trajectory trajectory)
+        public void Init(Camera camera, Mail mailPrefab, Trajectory trajectory)
         {
             _camera = camera;
-            _drone = drone;
+            _mailPrefab = mailPrefab;
             _trajectory = trajectory;
         }
         
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(_trajectory).AsSelf();
-            builder.RegisterInstance(_drone).As<IMailSender>();
             builder.RegisterEntryPoint<TimeController>().AsSelf();
+            builder.Register<MailSender>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(_mailPrefab);
             builder.Register<CameraBounds>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(_camera);
         }
     }

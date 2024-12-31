@@ -15,6 +15,7 @@ namespace MailboxGame.Boot
         [SerializeField] private Canvas _ui;
         [SerializeField] private WinDialogue _winDialogue;
         [SerializeField] private Trajectory _trajectory;
+        [SerializeField] private Mail _mailPrefab;
         
         private void Awake()
         {
@@ -24,7 +25,7 @@ namespace MailboxGame.Boot
             _winDialogue = Instantiate(_winDialogue);
             _trajectory = Instantiate(_trajectory);
 
-            var resolver = InitDiContainer(_camera, _drone, _trajectory);
+            var resolver = InitDiContainer(_camera, _mailPrefab, _trajectory);
 
             _trajectory.Init(_drone.GetComponent<Mover>());
             _winDialogue.Init(_mailbox);
@@ -34,10 +35,10 @@ namespace MailboxGame.Boot
             resolver.InjectGameObject(_mailbox.gameObject);
         }
 
-        private IObjectResolver InitDiContainer(Camera camera, Drone drone, Trajectory trajectory)
+        private IObjectResolver InitDiContainer(Camera camera, Mail mailPrefab, Trajectory trajectory)
         {
             _gameLifetimeScope = Instantiate(_gameLifetimeScope);
-            _gameLifetimeScope.Init(camera, drone, trajectory);
+            _gameLifetimeScope.Init(camera, mailPrefab, trajectory);
             _gameLifetimeScope.Build();
             var resolver = _gameLifetimeScope.Container;
             return resolver;

@@ -1,18 +1,17 @@
 using UnityEngine;
+using VContainer;
 
 namespace MailboxGame.Gameplay
 {
     [RequireComponent(typeof(Mover))]
-    public class Drone : MonoBehaviour, IMailSender
+    public class Drone : MonoBehaviour
     {
-        [SerializeField, Range(0f, 1f)] private float _sendMailTime = 0.5f;
-        [SerializeField] private Mail _mailPrefab;
-
+        [Inject] private readonly IMailSender _mailSender;
+        [Inject] private readonly TimeController _time;
+        
         private Mover _mover;
         private float _oldTime = 0f;
-        
-        public float SendTime { get => _sendMailTime; set => _sendMailTime = Mathf.Clamp01(value); }
-        public float CurrentTime => Mathf.Clamp01(_mover.Position / _mover.Length);
+        private float _currentTime;
 
         private void Awake()
         {
@@ -21,24 +20,21 @@ namespace MailboxGame.Gameplay
 
         private void FixedUpdate()
         {
-            if (IsOverlap(_sendMailTime))
+            _currentTime = Mathf.Clamp01(_mover.Position / _mover.Length);
+            _mailSender.CurrentTime = _currentTime;
+            
+            if (IsOverlap(_mailSender.SendTime) && _time.Scale > 0f)
             {
-                SendMail();
+                _mailSender.SendMail(transform.position);
             }
             
-            _oldTime = CurrentTime;
-        }
-
-        [ContextMenu("Spawn")]
-        public void SendMail()
-        {
-            Instantiate(_mailPrefab, transform.position, Quaternion.identity);
+            _oldTime = _currentTime;
         }
 
         private bool IsOverlap(float t)
         {
-            float current = Mathf.Max(CurrentTime, _oldTime);
-            float old = Mathf.Min(CurrentTime, _oldTime);
+            float current = Mathf.Max(_currentTime, _oldTime);
+            float old = Mathf.Min(_currentTime, _oldTime);
             return current > t && t > old;
         }
     }
