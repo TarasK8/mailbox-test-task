@@ -155,6 +155,7 @@ MonoBehaviour:
   _ui: {fileID: 2538154815744714022, guid: 18c20a24aa045f94fbc9eed51ec8b24e, type: 3}
   _winDialogue: {fileID: 1538426728362055183, guid: 29ecdc4939aa7bb4b89bf717ff42201c, type: 3}
   _trajectory: {fileID: 246802582887172483, guid: f6552372855fd8844a6a6eac53ba95af, type: 3}
+  _mailPrefab: {fileID: -3650322522805625135, guid: ef3f40fbaf964794c8697e7cc641aacc, type: 3}
 --- !u!4 &83540923
 Transform:
   m_ObjectHideFlags: 0
